@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Amazon.in – Secure Checkout | Payment</title>
+  <meta name="description" content="Amazon secure payment checkout. Pay safely with credit/debit card, UPI, net banking or cash on delivery." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="payment.css" />
+  <script>
+    (function(){
+      const t = localStorage.getItem('amazon_theme') || 'light';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+</head>
+<body>
+
+<!-- ===== HEADER (slim checkout header) ===== -->
+<header class="checkout-header">
+  <div class="checkout-header-inner">
+    <a href="index.html" class="logo" aria-label="Amazon Home">
+      <svg viewBox="0 0 140 45" fill="none" xmlns="http://www.w3.org/2000/svg" style="height:28px">
+        <text x="0" y="34" font-family="Bookman Old Style,serif" font-size="38" font-weight="900" fill="white">amazon</text>
+        <path d="M8 41 Q60 52 118 37" stroke="#FF9900" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <polygon points="114,33 121,38 113,42" fill="#FF9900"/>
+      </svg>
+      <span class="logo-domain">.in</span>
+    </a>
+
+    <!-- Checkout steps breadcrumb -->
+    <div class="checkout-steps" aria-label="Checkout steps">
+      <span class="step done">Cart</span>
+      <span class="step-arrow">›</span>
+      <span class="step active">Payment</span>
+      <span class="step-arrow">›</span>
+      <span class="step upcoming">Review</span>
+      <span class="step-arrow">›</span>
+      <span class="step upcoming">Confirmation</span>
+    </div>
+
+    <button class="theme-toggle" id="theme-toggle-btn" aria-label="Toggle theme" title="Toggle theme">
+      <div class="theme-toggle-track">
+        <div class="theme-toggle-thumb">
+          <span class="theme-icon sun-icon">☀️</span>
+          <span class="theme-icon moon-icon">🌙</span>
+        </div>
+      </div>
+    </button>
+  </div>
+</header>
+
+<!-- ===== MAIN PAYMENT PAGE ===== -->
+<main class="payment-main">
+  <div class="payment-layout">
+
+    <!-- LEFT: Payment form -->
+    <section class="payment-form-section">
+
+      <!-- Step 1: Delivery address summary -->
+      <div class="payment-step-card" id="address-card">
+        <div class="step-card-header">
+          <div class="step-number">1</div>
+          <h2>Delivery Address</h2>
+          <button class="btn-change-step" onclick="toggleAddressEdit()">Change</button>
+        </div>
+        <div id="address-display" class="address-display">
+          <p class="address-name" id="addr-name">Sayan Mandal</p>
+          <p class="address-line" id="addr-line">123, MG Road, Koramangala</p>
+          <p class="address-city" id="addr-city">Bengaluru, Karnataka – 560034</p>
+          <p class="address-phone" id="addr-phone">📞 +91 98765 43210</p>
+        </div>
+        <div id="address-edit" class="address-edit-form" style="display:none">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="addr-full-name">Full Name</label>
+              <input type="text" id="addr-full-name" placeholder="Full name" value="Sayan Mandal" />
+            </div>
+            <div class="form-group">
+              <label for="addr-phone-input">Mobile Number</label>
+              <input type="tel" id="addr-phone-input" placeholder="+91 XXXXX XXXXX" value="+91 98765 43210" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="addr-street">Street Address</label>
+            <input type="text" id="addr-street" placeholder="House/Flat No., Street, Area" value="123, MG Road, Koramangala" />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="addr-city-input">City</label>
+              <input type="text" id="addr-city-input" placeholder="City" value="Bengaluru" />
+            </div>
+            <div class="form-group">
+              <label for="addr-state">State</label>
+              <select id="addr-state">
+                <option>Karnataka</option>
+                <option>Maharashtra</option>
+                <option>Delhi</option>
+                <option>Tamil Nadu</option>
+                <option>West Bengal</option>
+                <option>Gujarat</option>
+                <option>Telangana</option>
+                <option>Rajasthan</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="addr-pin">PIN Code</label>
+              <input type="text" id="addr-pin" placeholder="6-digit PIN" value="560034" maxlength="6" />
+            </div>
+          </div>
+          <button class="btn-save-address" onclick="saveAddress()">Use this address</button>
+        </div>
+      </div>
+
+      <!-- Step 2: Payment method -->
+      <div class="payment-step-card active-step" id="payment-method-card">
+        <div class="step-card-header">
+          <div class="step-number">2</div>
+          <h2>Payment Method</h2>
+        </div>
+
+        <!-- Payment method tabs -->
+        <div class="payment-tabs" role="tablist">
+          <button class="payment-tab active" id="tab-card" role="tab" aria-selected="true" onclick="switchPaymentTab('card')">
+            <span class="tab-icon">💳</span> Credit / Debit Card
+          </button>
+          <button class="payment-tab" id="tab-upi" role="tab" aria-selected="false" onclick="switchPaymentTab('upi')">
+            <span class="tab-icon">📱</span> UPI
+          </button>
+          <button class="payment-tab" id="tab-netbanking" role="tab" aria-selected="false" onclick="switchPaymentTab('netbanking')">
+            <span class="tab-icon">🏦</span> Net Banking
+          </button>
+          <button class="payment-tab" id="tab-emi" role="tab" aria-selected="false" onclick="switchPaymentTab('emi')">
+            <span class="tab-icon">📅</span> EMI
+          </button>
+          <button class="payment-tab" id="tab-cod" role="tab" aria-selected="false" onclick="switchPaymentTab('cod')">
+            <span class="tab-icon">💵</span> Cash on Delivery
+          </button>
+        </div>
+
+        <!-- CARD PANEL -->
+        <div class="payment-panel" id="panel-card">
+          <!-- Live credit card preview -->
+          <div class="card-preview-wrap">
+            <div class="credit-card" id="credit-card-preview">
+              <div class="card-chip">
+                <div class="chip-inner"></div>
+              </div>
+              <div class="card-number-display" id="card-num-display">•••• •••• •••• ••••</div>
+              <div class="card-bottom-row">
+                <div>
+                  <div class="card-label">Card Holder</div>
+                  <div class="card-holder-display" id="card-holder-display">YOUR NAME</div>
+                </div>
+                <div>
+                  <div class="card-label">Expires</div>
+                  <div class="card-exp-display" id="card-exp-display">MM / YY</div>
+                </div>
+                <div class="card-network" id="card-network-icon">
+                  <div class="visa-logo">VISA</div>
+                </div>
+              </div>
+              <div class="card-shimmer"></div>
+            </div>
+          </div>
+
+          <!-- Card form -->
+          <form class="card-form" id="card-form" onsubmit="submitPayment(event)">
+            <div class="form-group">
+              <label for="card-number">Card Number</label>
+              <div class="input-icon-wrap">
+                <input type="text" id="card-number" class="card-input" placeholder="1234 5678 9012 3456"
+                  maxlength="19" autocomplete="cc-number" inputmode="numeric"
+                  oninput="formatCardNumber(this)" onfocus="flipCard(false)" />
+                <span class="input-card-icons" id="input-card-icons">
+                  <svg viewBox="0 0 48 32" fill="none" width="34"><rect width="48" height="32" rx="4" fill="#1A1F71"/><rect x="0" y="10" width="48" height="12" fill="#F7B600"/><text x="8" y="25" font-size="11" font-weight="900" fill="white">VISA</text></svg>
+                </span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="card-name">Name on Card</label>
+              <input type="text" id="card-name" class="card-input" placeholder="As printed on card"
+                autocomplete="cc-name" oninput="updateCardHolder(this)" onfocus="flipCard(false)" />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="card-expiry">Expiry Date</label>
+                <input type="text" id="card-expiry" class="card-input" placeholder="MM / YY"
+                  maxlength="7" autocomplete="cc-exp" inputmode="numeric"
+                  oninput="formatExpiry(this)" onfocus="flipCard(false)" />
+              </div>
+              <div class="form-group">
+                <label for="card-cvv">CVV <span class="cvv-help" title="3-digit code on back of card">?</span></label>
+                <input type="password" id="card-cvv" class="card-input" placeholder="•••"
+                  maxlength="4" autocomplete="cc-csc" inputmode="numeric"
+                  onfocus="flipCard(true)" onblur="flipCard(false)" />
+              </div>
+            </div>
+            <div class="save-card-row">
+              <label class="save-card-label">
+                <input type="checkbox" id="save-card" checked /> Save card securely for future purchases
+              </label>
+            </div>
+            <div class="accepted-cards">
+              <span class="accepted-label">We accept:</span>
+              <div class="card-logos">
+                <div class="card-logo visa">VISA</div>
+                <div class="card-logo mc">MC</div>
+                <div class="card-logo rupay">RuPay</div>
+                <div class="card-logo amex">AMEX</div>
+              </div>
+            </div>
+            <button type="submit" class="btn-pay" id="btn-pay-card">
+              <svg viewBox="0 0 20 20" fill="currentColor" width="18"><path d="M10 1l7 3v6c0 4-3.5 7-7 9C3.5 17 0 14 0 10V4l10-3z"/></svg>
+              <span>Pay Securely</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- UPI PANEL -->
+        <div class="payment-panel" id="panel-upi" style="display:none">
+          <div class="upi-section">
+            <h3 class="upi-title">Pay via UPI</h3>
+            <!-- UPI Apps grid -->
+            <div class="upi-apps-grid">
+              <label class="upi-app-card">
+                <input type="radio" name="upi-app" value="gpay" checked />
+                <div class="upi-app-inner">
+                  <div class="upi-app-icon gpay-icon">G Pay</div>
+                  <span>Google Pay</span>
+                </div>
+              </label>
+              <label class="upi-app-card">
+                <input type="radio" name="upi-app" value="phonepe" />
+                <div class="upi-app-inner">
+                  <div class="upi-app-icon phonepe-icon">PhonePe</div>
+                  <span>PhonePe</span>
+                </div>
+              </label>
+              <label class="upi-app-card">
+                <input type="radio" name="upi-app" value="paytm" />
+                <div class="upi-app-inner">
+                  <div class="upi-app-icon paytm-icon">Paytm</div>
+                  <span>Paytm</span>
+                </div>
+              </label>
+              <label class="upi-app-card">
+                <input type="radio" name="upi-app" value="bhim" />
+                <div class="upi-app-inner">
+                  <div class="upi-app-icon bhim-icon">BHIM</div>
+                  <span>BHIM</span>
+                </div>
+              </label>
+              <label class="upi-app-card">
+                <input type="radio" name="upi-app" value="other" />
+                <div class="upi-app-inner">
+                  <div class="upi-app-icon other-icon">UPI</div>
+                  <span>Other UPI</span>
+                </div>
+              </label>
+            </div>
+
+            <div class="upi-divider"><span>or enter UPI ID</span></div>
+
+            <form onsubmit="submitPayment(event)">
+              <div class="form-group">
+                <label for="upi-id">UPI ID / VPA</label>
+                <div class="upi-input-wrap">
+                  <input type="text" id="upi-id" placeholder="yourname@upi" class="upi-id-input" />
+                  <button type="button" class="btn-verify-upi" onclick="verifyUPI()">Verify</button>
+                </div>
+                <span class="upi-hint">e.g., mobile@paytm, name@okicici</span>
+              </div>
+              <button type="submit" class="btn-pay">
+                <svg viewBox="0 0 20 20" fill="currentColor" width="18"><path d="M10 1l7 3v6c0 4-3.5 7-7 9C3.5 17 0 14 0 10V4l10-3z"/></svg>
+                Pay via UPI
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- NET BANKING PANEL -->
+        <div class="payment-panel" id="panel-netbanking" style="display:none">
+          <div class="netbanking-section">
+            <h3 class="upi-title">Select Your Bank</h3>
+            <div class="bank-grid">
+              <label class="bank-card" onclick="selectBank(this)">
+                <input type="radio" name="bank" value="sbi" />
+                <div class="bank-card-inner">
+                  <div class="bank-icon sbi">SBI</div>
+                  <span>State Bank of India</span>
+                </div>
+              </label>
+              <label class="bank-card" onclick="selectBank(this)">
+                <input type="radio" name="bank" value="hdfc" />
+                <div class="bank-card-inner">
+                  <div class="bank-icon hdfc">HDFC</div>
+                  <span>HDFC Bank</span>
+                </div>
+              </label>
+              <label class="bank-card" onclick="selectBank(this)">
+                <input type="radio" name="bank" value="icici" />
+                <div class="bank-card-inner">
+                  <div class="bank-icon icici">ICICI</div>
+                  <span>ICICI Bank</span>
+                </div>
+              </label>
+              <label class="bank-card" onclick="selectBank(this)">
+                <input type="radio" name="bank" value="axis" />
+                <div class="bank-card-inner">
+                  <div class="bank-icon axis">AXIS</div>
+                  <span>Axis Bank</span>
+                </div>
+              </label>
+              <label class="bank-card" onclick="selectBank(this)">
+                <input type="radio" name="bank" value="kotak" />
+                <div class="bank-card-inner">
+                  <div class="bank-icon kotak">KMB</div>
+                  <span>Kotak Mahindra</span>
+                </div>
+              </label>
+              <label class="bank-card" onclick="selectBank(this)">
+                <input type="radio" name="bank" value="pnb" />
+                <div class="bank-card-inner">
+                  <div class="bank-icon pnb">PNB</div>
+                  <span>Punjab National</span>
+                </div>
+              </label>
+            </div>
+            <div class="form-group" style="margin-top:16px">
+              <label for="other-bank">Other Banks</label>
+              <select id="other-bank" class="bank-select">
+                <option value="">Select your bank</option>
+                <option>Bank of Baroda</option>
+                <option>Canara Bank</option>
+                <option>Union Bank</option>
+                <option>IndusInd Bank</option>
+                <option>Yes Bank</option>
+                <option>IDFC First Bank</option>
+                <option>Federal Bank</option>
+              </select>
+            </div>
+            <button class="btn-pay" onclick="submitPayment(event)">
+              <svg viewBox="0 0 20 20" fill="currentColor" width="18"><path d="M10 1l7 3v6c0 4-3.5 7-7 9C3.5 17 0 14 0 10V4l10-3z"/></svg>
+              Proceed to Bank
+            </button>
+          </div>
+        </div>
+
+        <!-- EMI PANEL -->
+        <div class="payment-panel" id="panel-emi" style="display:none">
+          <div class="emi-section">
+            <h3 class="upi-title">EMI Options</h3>
+            <p class="emi-note">No Cost EMI available on select cards. Interest amount will be added to EMI and discounted from order total.</p>
+            <div id="emi-options-list"><!-- filled by JS --></div>
+            <button class="btn-pay" onclick="submitPayment(event)" style="margin-top:20px">
+              <svg viewBox="0 0 20 20" fill="currentColor" width="18"><path d="M10 1l7 3v6c0 4-3.5 7-7 9C3.5 17 0 14 0 10V4l10-3z"/></svg>
+              Confirm EMI
+            </button>
+          </div>
+        </div>
+
+        <!-- COD PANEL -->
+        <div class="payment-panel" id="panel-cod" style="display:none">
+          <div class="cod-section">
+            <div class="cod-icon">💵</div>
+            <h3>Cash on Delivery</h3>
+            <p>Pay with cash when your order is delivered to your doorstep. No extra charges.</p>
+            <div class="cod-info-grid">
+              <div class="cod-info-item">
+                <span class="cod-info-icon">✅</span>
+                <span>No advance payment required</span>
+              </div>
+              <div class="cod-info-item">
+                <span class="cod-info-icon">🚚</span>
+                <span>Pay at the time of delivery</span>
+              </div>
+              <div class="cod-info-item">
+                <span class="cod-info-icon">🔒</span>
+                <span>Safe & secure delivery</span>
+              </div>
+              <div class="cod-info-item">
+                <span class="cod-info-icon">↩️</span>
+                <span>Easy returns within 10 days</span>
+              </div>
+            </div>
+            <div class="cod-availability" id="cod-availability">
+              <span class="cod-check">✅ COD available for your location</span>
+            </div>
+            <button class="btn-pay btn-cod" onclick="submitPayment(event)">
+              💵 Place Order (Pay on Delivery)
+            </button>
+          </div>
+        </div>
+
+      </div><!-- /payment-method-card -->
+    </section>
+
+    <!-- RIGHT: Order summary -->
+    <aside class="payment-summary-panel">
+      <div class="payment-summary-card">
+        <h3 class="summary-title">Order Summary</h3>
+        <div class="summary-items" id="summary-items"><!-- filled by JS --></div>
+        <div class="summary-divider"></div>
+        <div class="summary-row">
+          <span>Items (<span id="summary-count">0</span>)</span>
+          <span id="summary-items-total">₹0</span>
+        </div>
+        <div class="summary-row">
+          <span>Delivery</span>
+          <span class="summary-free">FREE</span>
+        </div>
+        <div class="summary-row discount-row" id="promo-row" style="display:none">
+          <span>Promo Discount</span>
+          <span class="summary-discount" id="promo-discount-amt">-₹0</span>
+        </div>
+        <div class="summary-divider"></div>
+        <div class="summary-row total-row">
+          <strong>Order Total</strong>
+          <strong id="summary-total">₹0</strong>
+        </div>
+        <div class="summary-savings" id="summary-savings"><!-- filled by JS --></div>
+
+        <!-- Promo code -->
+        <div class="promo-section">
+          <div class="promo-input-wrap">
+            <input type="text" id="promo-input" placeholder="Promo / Gift Card code" class="promo-input" />
+            <button class="btn-apply-promo" onclick="applyPromo()">Apply</button>
+          </div>
+          <div class="promo-msg" id="promo-msg"></div>
+        </div>
+
+        <!-- Security badges -->
+        <div class="security-badges">
+          <div class="security-badge">
+            <svg viewBox="0 0 20 20" fill="currentColor" width="16"><path d="M10 1l7 3v6c0 4-3.5 7-7 9C3.5 17 0 14 0 10V4l10-3z"/></svg>
+            <span>SSL Secured</span>
+          </div>
+          <div class="security-badge">
+            <span>🔒</span>
+            <span>Safe Checkout</span>
+          </div>
+          <div class="security-badge">
+            <span>↩️</span>
+            <span>Easy Returns</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+  </div><!-- /payment-layout -->
+</main>
+
+<!-- ===== PAYMENT PROCESSING OVERLAY ===== -->
+<div class="processing-overlay" id="processing-overlay" role="status" aria-live="polite">
+  <div class="processing-modal">
+    <div class="processing-animation">
+      <div class="processing-ring"></div>
+      <div class="processing-ring ring2"></div>
+      <div class="processing-ring ring3"></div>
+      <div class="processing-lock">🔒</div>
+    </div>
+    <h2 id="processing-status">Processing Payment...</h2>
+    <p id="processing-subtext">Please do not refresh the page</p>
+    <div class="processing-steps">
+      <div class="proc-step" id="proc-step-1"><span class="proc-dot"></span>Verifying payment details</div>
+      <div class="proc-step" id="proc-step-2"><span class="proc-dot"></span>Communicating with bank</div>
+      <div class="proc-step" id="proc-step-3"><span class="proc-dot"></span>Confirming your order</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SUCCESS OVERLAY ===== -->
+<div class="success-overlay" id="success-overlay" role="dialog" aria-modal="true" aria-labelledby="success-title">
+  <div class="success-modal">
+    <div class="success-animation">
+      <svg class="success-checkmark" viewBox="0 0 52 52">
+        <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+        <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+      </svg>
+    </div>
+    <h1 id="success-title">Payment Successful! 🎉</h1>
+    <p class="success-subtitle">Your order has been placed successfully</p>
+    <div class="success-order-info" id="success-order-info"></div>
+    <div class="success-actions">
+      <button class="btn-track-order" onclick="window.location.href='index.html'">
+        📦 Track Your Order
+      </button>
+      <button class="btn-continue-shopping" onclick="window.location.href='index.html'">
+        Continue Shopping
+      </button>
+    </div>
+    <div class="success-email-note">
+      A confirmation has been sent to your registered email
+    </div>
+  </div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast" aria-live="polite"></div>
+
+<script src="data.js"></script>
+<script src="theme.js"></script>
+<script src="payment.js"></script>
+</body>
+</html>

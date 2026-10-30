@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Amazon.in - Online Shopping India | Buy Mobiles, Electronics, Appliances, Clothing</title>
+  <meta name="description" content="Amazon India - Shop Online for Electronics, Mobiles, Appliances, Clothing, Books & more. Great Deals, Fast Delivery, Easy Returns." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script>
+    // Apply saved theme immediately to prevent FOUC
+    (function(){
+      const t = localStorage.getItem('amazon_theme') || 'light';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="site-header" id="site-header">
+  <!-- Top bar -->
+  <div class="header-top">
+    <!-- Logo -->
+    <a href="index.html" class="logo" id="logo-link" aria-label="Amazon Home">
+      <svg viewBox="0 0 140 45" fill="none" xmlns="http://www.w3.org/2000/svg" class="logo-svg">
+        <text x="0" y="34" font-family="Bookman Old Style,serif" font-size="38" font-weight="900" fill="white">amazon</text>
+        <path d="M8 41 Q60 52 118 37" stroke="#FF9900" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <polygon points="114,33 121,38 113,42" fill="#FF9900"/>
+      </svg>
+      <span class="logo-domain">.in</span>
+    </a>
+
+    <!-- Delivery location -->
+    <div class="delivery-location" id="delivery-location-btn">
+      <span class="location-icon">📍</span>
+      <div class="location-text">
+        <span class="deliver-to">Deliver to</span>
+        <span class="location-name">India</span>
+      </div>
+    </div>
+
+    <!-- Search bar -->
+    <div class="search-bar-container">
+      <div class="search-category-select-wrap">
+        <select id="search-category-select" class="search-category-select" aria-label="Search category">
+          <option>All</option>
+          <option>Electronics</option>
+          <option>Fashion</option>
+          <option>Home &amp; Kitchen</option>
+          <option>Books</option>
+          <option>Beauty</option>
+          <option>Sports</option>
+          <option>Toys</option>
+          <option>Grocery</option>
+        </select>
+      </div>
+      <input type="text" id="search-input" class="search-input" placeholder="Search Amazon.in" autocomplete="off" aria-label="Search Amazon.in" />
+      <button class="search-btn" id="search-btn" aria-label="Search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </button>
+      <!-- Search suggestions dropdown -->
+      <div class="search-suggestions" id="search-suggestions" aria-live="polite"></div>
+    </div>
+
+    <!-- Right nav items -->
+    <div class="header-right">
+      <!-- Dark/Light mode toggle -->
+      <button class="theme-toggle" id="theme-toggle-btn" aria-label="Toggle dark/light mode" title="Toggle theme">
+        <div class="theme-toggle-track">
+          <div class="theme-toggle-thumb" id="theme-thumb">
+            <span class="theme-icon sun-icon">☀️</span>
+            <span class="theme-icon moon-icon">🌙</span>
+          </div>
+        </div>
+      </button>
+      <!-- Language -->
+      <div class="header-nav-item" id="language-btn">
+        <span class="nav-flag">🌐</span>
+        <span class="nav-text">EN</span>
+        <span class="nav-arrow">▾</span>
+      </div>
+
+      <!-- Account -->
+      <div class="header-nav-item account-nav" id="account-nav-btn">
+        <div class="nav-label">Hello, Sign in</div>
+        <div class="nav-main">Account &amp; Lists <span class="nav-arrow">▾</span></div>
+        <!-- Account dropdown -->
+        <div class="account-dropdown" id="account-dropdown">
+          <div class="account-dropdown-top">
+            <button class="btn-signin" id="signin-btn-dropdown" onclick="openModal('signin-modal')">Sign in</button>
+            <p>New customer? <a href="#" onclick="openModal('signup-modal')">Start here.</a></p>
+          </div>
+          <div class="account-dropdown-links">
+            <div class="dropdown-col">
+              <h4>Your Lists</h4>
+              <a href="#">Create a Wish List</a>
+              <a href="#">Wish from Any Website</a>
+              <a href="#">Baby Wishlist</a>
+              <a href="#">Discover Your Style</a>
+            </div>
+            <div class="dropdown-col">
+              <h4>Your Account</h4>
+              <a href="#" onclick="openModal('signin-modal')">Account</a>
+              <a href="#">Orders</a>
+              <a href="#">Recommendations</a>
+              <a href="#">Browsing History</a>
+              <a href="#">Prime</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Returns & Orders -->
+      <div class="header-nav-item" id="orders-nav-btn" onclick="openModal('signin-modal')">
+        <div class="nav-label">Returns</div>
+        <div class="nav-main">&amp; Orders</div>
+      </div>
+
+      <!-- Cart -->
+      <a href="cart.html" class="cart-nav" id="cart-nav" aria-label="Shopping Cart">
+        <div class="cart-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="currentColor" class="cart-svg"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0"/></svg>
+          <span class="cart-count" id="cart-count">0</span>
+        </div>
+        <span class="cart-text">Cart</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Navigation bar -->
+  <nav class="header-nav" aria-label="Main navigation">
+    <div class="nav-inner">
+      <button class="nav-hamburger" id="nav-hamburger-btn" aria-label="All categories">
+        <svg viewBox="0 0 24 24" fill="currentColor"><rect y="4" width="24" height="2" rx="1"/><rect y="11" width="24" height="2" rx="1"/><rect y="18" width="24" height="2" rx="1"/></svg>
+        All
+      </button>
+      <a href="#" class="nav-link active" data-category="all" onclick="filterCategory(event,'all')">Today's Deals</a>
+      <a href="#" class="nav-link" data-category="electronics" onclick="filterCategory(event,'electronics')">Electronics</a>
+      <a href="#" class="nav-link" data-category="fashion" onclick="filterCategory(event,'fashion')">Fashion</a>
+      <a href="#" class="nav-link" data-category="home" onclick="filterCategory(event,'home')">Home &amp; Kitchen</a>
+      <a href="#" class="nav-link" data-category="books" onclick="filterCategory(event,'books')">Books</a>
+      <a href="#" class="nav-link" data-category="beauty" onclick="filterCategory(event,'beauty')">Beauty</a>
+      <a href="#" class="nav-link" data-category="sports" onclick="filterCategory(event,'sports')">Sports</a>
+      <a href="#" class="nav-link" data-category="toys" onclick="filterCategory(event,'toys')">Toys &amp; Games</a>
+      <a href="#" class="nav-link prime-link">
+        <span class="prime-badge">prime</span>
+      </a>
+      <a href="#" class="nav-link">Customer Service</a>
+    </div>
+  </nav>
+</header>
+
+<!-- ===== SIDEBAR (all categories) ===== -->
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+<aside class="sidebar" id="sidebar" aria-label="Categories sidebar">
+  <div class="sidebar-header">
+    <span>👤 Hello, Sign in</span>
+    <button class="sidebar-close" onclick="closeSidebar()" aria-label="Close sidebar">✕</button>
+  </div>
+  <div class="sidebar-section">
+    <h3>Shop by Department</h3>
+    <a href="#" class="sidebar-link" onclick="filterCategory(event,'electronics');closeSidebar()">Electronics</a>
+    <a href="#" class="sidebar-link" onclick="filterCategory(event,'fashion');closeSidebar()">Fashion</a>
+    <a href="#" class="sidebar-link" onclick="filterCategory(event,'home');closeSidebar()">Home &amp; Kitchen</a>
+    <a href="#" class="sidebar-link" onclick="filterCategory(event,'books');closeSidebar()">Books</a>
+    <a href="#" class="sidebar-link" onclick="filterCategory(event,'beauty');closeSidebar()">Beauty</a>
+    <a href="#" class="sidebar-link" onclick="filterCategory(event,'sports');closeSidebar()">Sports</a>
+    <a href="#" class="sidebar-link" onclick="filterCategory(event,'toys');closeSidebar()">Toys &amp; Games</a>
+    <a href="#" class="sidebar-link" onclick="filterCategory(event,'grocery');closeSidebar()">Grocery</a>
+  </div>
+  <div class="sidebar-section">
+    <h3>Settings &amp; Programs</h3>
+    <a href="#" class="sidebar-link" onclick="openModal('signin-modal');closeSidebar()">Sign in</a>
+    <a href="#" class="sidebar-link">Amazon Prime</a>
+    <a href="#" class="sidebar-link">Customer Service</a>
+  </div>
+</aside>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main id="main-content">
+
+  <!-- Hero Banner Carousel -->
+  <section class="hero-section" aria-label="Promotions">
+    <div class="hero-carousel" id="hero-carousel">
+      <div class="hero-slide active" style="background: linear-gradient(135deg,#0f2027,#203a43,#2c5364)">
+        <img src="hero_banner.png" alt="Great Indian Festival - Up to 70% off" class="hero-img" loading="eager" />
+      </div>
+      <div class="hero-slide" style="background: linear-gradient(135deg,#1a1a2e,#16213e,#0f3460)">
+        <div class="hero-content-plain">
+          <h2>New Year New Deals</h2>
+          <p>Massive savings on Electronics &amp; Fashion</p>
+          <button class="btn-shop-now" onclick="filterCategory(event,'electronics')">Shop Electronics</button>
+        </div>
+      </div>
+      <div class="hero-slide" style="background: linear-gradient(135deg,#2d1b69,#11998e,#38ef7d)">
+        <div class="hero-content-plain">
+          <h2>Amazon Prime</h2>
+          <p>Free delivery on millions of items + exclusive deals</p>
+          <button class="btn-shop-now btn-prime">Try Prime Free</button>
+        </div>
+      </div>
+    </div>
+    <button class="carousel-btn prev" id="carousel-prev" aria-label="Previous slide">❮</button>
+    <button class="carousel-btn next" id="carousel-next" aria-label="Next slide">❯</button>
+    <div class="carousel-dots" id="carousel-dots">
+      <span class="dot active" onclick="goToSlide(0)"></span>
+      <span class="dot" onclick="goToSlide(1)"></span>
+      <span class="dot" onclick="goToSlide(2)"></span>
+    </div>
+  </section>
+
+  <!-- ===== PRODUCT GRID ===== -->
+  <div class="content-wrap">
+
+    <!-- Category boxes row -->
+    <section class="category-cards-section" aria-label="Shop by Category">
+      <div class="category-cards-grid" id="category-cards-grid">
+        <div class="category-card" onclick="filterCategory(event,'electronics')">
+          <h3>Electronics</h3>
+          <img src="product_phone.png" alt="Electronics" loading="lazy" />
+          <a href="#">Shop now</a>
+        </div>
+        <div class="category-card" onclick="filterCategory(event,'fashion')">
+          <h3>Fashion Picks</h3>
+          <img src="category_icons.png" alt="Fashion" loading="lazy" style="object-position:center top" />
+          <a href="#">Shop now</a>
+        </div>
+        <div class="category-card" onclick="filterCategory(event,'home')">
+          <h3>Home &amp; Kitchen</h3>
+          <img src="product_watch.png" alt="Home" loading="lazy" />
+          <a href="#">Shop now</a>
+        </div>
+        <div class="category-card" onclick="filterCategory(event,'books')">
+          <h3>Books &amp; More</h3>
+          <img src="product_laptop.png" alt="Books" loading="lazy" />
+          <a href="#">Shop now</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filter & Sort bar -->
+    <div class="filter-sort-bar" id="filter-sort-bar">
+      <div class="filter-chips" id="filter-chips">
+        <span class="filter-chip active" data-category="all" onclick="filterCategory(event,'all')">All</span>
+        <span class="filter-chip" data-category="electronics" onclick="filterCategory(event,'electronics')">Electronics</span>
+        <span class="filter-chip" data-category="fashion" onclick="filterCategory(event,'fashion')">Fashion</span>
+        <span class="filter-chip" data-category="home" onclick="filterCategory(event,'home')">Home</span>
+        <span class="filter-chip" data-category="books" onclick="filterCategory(event,'books')">Books</span>
+        <span class="filter-chip" data-category="beauty" onclick="filterCategory(event,'beauty')">Beauty</span>
+        <span class="filter-chip" data-category="sports" onclick="filterCategory(event,'sports')">Sports</span>
+        <span class="filter-chip" data-category="toys" onclick="filterCategory(event,'toys')">Toys</span>
+        <span class="filter-chip" data-category="grocery" onclick="filterCategory(event,'grocery')">Grocery</span>
+      </div>
+      <div class="sort-section">
+        <label for="sort-select" class="sort-label">Sort by:</label>
+        <select id="sort-select" class="sort-select" onchange="sortProducts()" aria-label="Sort products">
+          <option value="featured">Featured</option>
+          <option value="price-low">Price: Low to High</option>
+          <option value="price-high">Price: High to Low</option>
+          <option value="rating">Avg. Customer Review</option>
+          <option value="newest">Newest Arrivals</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Products section heading -->
+    <div class="section-heading">
+      <h2 id="products-heading">Today's Deals</h2>
+      <span class="results-count" id="results-count"></span>
+    </div>
+
+    <!-- Product grid -->
+    <div class="products-grid" id="products-grid" aria-live="polite" aria-label="Products"></div>
+
+    <!-- Load more -->
+    <div class="load-more-wrap">
+      <button class="btn-load-more" id="load-more-btn" onclick="loadMoreProducts()">See more results</button>
+    </div>
+
+  </div><!-- /content-wrap -->
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer class="site-footer">
+  <a href="#site-header" class="back-to-top" id="back-to-top-link">Back to top</a>
+  <div class="footer-links-section">
+    <div class="footer-col">
+      <h4>Get to Know Us</h4>
+      <a href="#">About Amazon</a>
+      <a href="#">Careers</a>
+      <a href="#">Press Releases</a>
+      <a href="#">Amazon Science</a>
+    </div>
+    <div class="footer-col">
+      <h4>Connect with Us</h4>
+      <a href="#">Facebook</a>
+      <a href="#">Twitter</a>
+      <a href="#">Instagram</a>
+    </div>
+    <div class="footer-col">
+      <h4>Make Money with Us</h4>
+      <a href="#">Sell on Amazon</a>
+      <a href="#">Sell under Amazon Accelerator</a>
+      <a href="#">Amazon Associates</a>
+      <a href="#">Advertise Your Products</a>
+    </div>
+    <div class="footer-col">
+      <h4>Let Us Help You</h4>
+      <a href="#">COVID-19 and Amazon</a>
+      <a href="#">Your Account</a>
+      <a href="#">Returns Centre</a>
+      <a href="#">100% Purchase Protection</a>
+      <a href="#">Amazon App Download</a>
+      <a href="#">Help</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-logo">
+      <svg viewBox="0 0 120 38" fill="none" xmlns="http://www.w3.org/2000/svg" style="height:28px">
+        <text x="0" y="28" font-family="Bookman Old Style,serif" font-size="32" font-weight="900" fill="white">amazon</text>
+        <path d="M5 34 Q55 43 105 30" stroke="#FF9900" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <polygon points="101,26 108,31 100,35" fill="#FF9900"/>
+      </svg>
+      <span style="color:white;font-size:13px;margin-left:2px">.in</span>
+    </div>
+    <div class="footer-bottom-links">
+      <a href="#">Conditions of Use &amp; Sale</a>
+      <a href="#">Privacy Notice</a>
+      <a href="#">Interest-Based Ads</a>
+    </div>
+    <p class="footer-copy">© 1996-2024, Amazon.com, Inc. or its affiliates</p>
+  </div>
+</footer>
+
+<!-- ===== PRODUCT DETAIL MODAL ===== -->
+<div class="modal-overlay" id="product-modal" role="dialog" aria-modal="true" aria-labelledby="product-modal-title">
+  <div class="product-modal-inner">
+    <button class="modal-close" onclick="closeModal('product-modal')" aria-label="Close product details">✕</button>
+    <div class="product-modal-content" id="product-modal-content"></div>
+  </div>
+</div>
+
+<!-- ===== SIGN IN MODAL ===== -->
+<div class="modal-overlay" id="signin-modal" role="dialog" aria-modal="true" aria-labelledby="signin-modal-title">
+  <div class="auth-modal-inner">
+    <button class="modal-close" onclick="closeModal('signin-modal')" aria-label="Close sign in">✕</button>
+    <div class="auth-logo">
+      <svg viewBox="0 0 120 38" fill="none" xmlns="http://www.w3.org/2000/svg" style="height:28px">
+        <text x="0" y="28" font-family="Bookman Old Style,serif" font-size="32" font-weight="900" fill="#0f1111">amazon</text>
+        <path d="M5 34 Q55 43 105 30" stroke="#FF9900" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <polygon points="101,26 108,31 100,35" fill="#FF9900"/>
+      </svg>
+      <span style="color:#0f1111;font-size:13px;margin-left:2px">.in</span>
+    </div>
+    <h2 id="signin-modal-title" class="auth-title">Sign in</h2>
+    <form class="auth-form" id="signin-form" onsubmit="handleSignIn(event)">
+      <label for="signin-email">Email or mobile phone number</label>
+      <input type="text" id="signin-email" placeholder="Email or phone" required autocomplete="email" />
+      <label for="signin-password">Password</label>
+      <input type="password" id="signin-password" placeholder="Password" required autocomplete="current-password" />
+      <button type="submit" class="btn-auth-primary">Sign in</button>
+      <p class="auth-terms">By continuing, you agree to Amazon's <a href="#">Conditions of Use</a> and <a href="#">Privacy Notice</a>.</p>
+    </form>
+    <div class="auth-divider"><span>New to Amazon?</span></div>
+    <button class="btn-auth-secondary" onclick="openModal('signup-modal');closeModal('signin-modal')">Create your Amazon account</button>
+  </div>
+</div>
+
+<!-- ===== SIGN UP MODAL ===== -->
+<div class="modal-overlay" id="signup-modal" role="dialog" aria-modal="true" aria-labelledby="signup-modal-title">
+  <div class="auth-modal-inner">
+    <button class="modal-close" onclick="closeModal('signup-modal')" aria-label="Close sign up">✕</button>
+    <div class="auth-logo">
+      <svg viewBox="0 0 120 38" fill="none" xmlns="http://www.w3.org/2000/svg" style="height:28px">
+        <text x="0" y="28" font-family="Bookman Old Style,serif" font-size="32" font-weight="900" fill="#0f1111">amazon</text>
+        <path d="M5 34 Q55 43 105 30" stroke="#FF9900" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <polygon points="101,26 108,31 100,35" fill="#FF9900"/>
+      </svg>
+      <span style="color:#0f1111;font-size:13px;margin-left:2px">.in</span>
+    </div>
+    <h2 id="signup-modal-title" class="auth-title">Create account</h2>
+    <form class="auth-form" id="signup-form" onsubmit="handleSignUp(event)">
+      <label for="signup-name">Your name</label>
+      <input type="text" id="signup-name" placeholder="First and last name" required autocomplete="name" />
+      <label for="signup-email">Mobile number or email</label>
+      <input type="text" id="signup-email" placeholder="Email or mobile phone" required autocomplete="email" />
+      <label for="signup-password">Password</label>
+      <input type="password" id="signup-password" placeholder="At least 6 characters" required minlength="6" autocomplete="new-password" />
+      <label for="signup-confirm-password">Re-enter password</label>
+      <input type="password" id="signup-confirm-password" placeholder="Re-enter password" required autocomplete="new-password" />
+      <button type="submit" class="btn-auth-primary">Create your Amazon account</button>
+      <p class="auth-terms">By creating an account, you agree to Amazon's <a href="#">Conditions of Use</a> and <a href="#">Privacy Notice</a>.</p>
+    </form>
+    <div class="auth-divider"><span>Already have an account?</span></div>
+    <button class="btn-auth-secondary" onclick="openModal('signin-modal');closeModal('signup-modal')">Sign in</button>
+  </div>
+</div>
+
+<!-- ===== TOAST NOTIFICATION ===== -->
+<div class="toast" id="toast" aria-live="polite"></div>
+
+<!-- ===== SCRIPTS ===== -->
+<script src="data.js"></script>
+<script src="theme.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
